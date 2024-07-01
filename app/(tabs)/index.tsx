@@ -1,70 +1,157 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { View, StyleSheet, Text, ActivityIndicator, Image } from 'react-native';
+import i18n from '../i18n';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
+import { Button, Title, TouchableRipple } from 'react-native-paper';
+import * as Icons from "react-native-heroicons/outline";
+import { TextInput, TouchableOpacity, Modal, Animated } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
+import TrackingModal from '../../components/TrackingModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import HomeView from '../HomeView'
+import StarterView from '../starterView';
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [modalHeight] = useState(new Animated.Value(0));
+  const [OrdersData, setOrdersData] = useState([]);
+  const openModal = () => {
+    setShowModal(true);
+    Animated.timing(modalHeight, {
+      toValue: 400,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(modalHeight, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start(() => {
+      setShowModal(false);
+    });
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const storedPackage = await AsyncStorage.getItem('orders');
+
+        const initialData = storedPackage ? JSON.parse(storedPackage) : null;
+        setOrdersData(initialData);
+      }
+      catch (error) {
+        console.error('Error fetching package data:', error);
+      }
+      finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, [OrdersData]);
+
+  
+  
+  if (isLoading) {
+    return <ActivityIndicator size="large" style={styles.container} />;
+  }
+  if (!OrdersData || OrdersData.length == 0 || OrdersData == null ) {
+
+    return (
+      <StarterView />
+    );
+  }
+  else{
+    return (
+      <HomeView  />
+    );
+  }
 }
+  
+  const styles = StyleSheet.create({
+    packageItem: {
+      padding: 15,
+      borderWidth: 1,
+      borderColor: 'lightgray',
+      borderRadius: 10,
+      marginBottom: 10,
+    },
+    packageText: {
+      fontSize: 18,
+    },
+    refreshButton: {
+      marginTop: 20,
+    },
+    refreshButtonText: {
+      color: 'white',
+      fontSize: 16,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    dashedBorder: {
+      borderStyle: 'dashed',
+      borderWidth: 1,
+      borderRadius: 10,
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderColor: 'rgba(161, 155, 183, 1)',
+      padding: 50,
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+    },
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 20,
+      backgroundColor: '#f0f0f0',
+
+    },
+    button: {
+      marginTop: 20,
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 10,
+      backgroundColor: 'blue',
+    },
+    buttonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      fontWeight: 'bold',
+    },
+    icon: {
+      marginRight: 10,
+
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 20,
+      fontWeight: 'bold',
+    },
+    logo: {
+      width: 70,
+      height: 70,
+      marginBottom: 5,
+      resizeMode: 'contain',
+    },
+    Title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 10,
+    },
+
+    paragraph: {
+      fontSize: 22,
+      textAlign: 'center',
+      color: 'gray',
+      marginBottom: 20,
+
+    },
+
+  });

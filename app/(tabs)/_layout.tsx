@@ -1,7 +1,9 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import i18n from '../i18n';
+import * as Icons from "react-native-heroicons/outline";
+import * as Haptics from 'expo-haptics';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -11,24 +13,33 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        //tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-      }}>
+      }}
+      screenListeners={{
+        tabPress: (e) => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+        }
+      }}
+    >
       <Tabs.Screen
         name="index"
+        
         options={{
-          title: 'Home',
+          title: i18n.t('delivery'),
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <Icons.MapPinIcon    color={color}  focusable={focused} />
+
           ),
+          
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: 'Explore',
+          title: i18n.t('profile'),
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <Icons.FaceSmileIcon    color={color}  focusable={focused} />
           ),
         }}
       />

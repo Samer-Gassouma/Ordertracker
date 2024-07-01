@@ -1,0 +1,27 @@
+{
+    "delivery": "Livraison",
+    "history": "Historique",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "welcome": "Bienvenue",
+    "welcomeMessage": "Commencez par ajouter une nouvelle expédition..",
+    "addPackage": "Ajouter un colis",
+    "trackingNumber": "Numéro de suivi",
+    "carrier": "Transporteur",
+    "label": "Étiquette (facultatif)",
+    "continue": "Continuer",
+    "back": "Retour",
+    "add": "Ajouter",
+    "remove": "Supprimer",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "update": "Mettre à jour available",
+    "updateRequired": "Mise à jour requise",
+    "updateAvailable": "Une nouvelle version de l'application est disponible. Voulez-vous la télécharger ?",
+    "updateRequiredMessage" : "Vous devez mettre à jour l'application pour continuer à l'utiliser.",
+    "networkError": "Erreur réseau",
+    "networkErrorMessage": "Une erreur s'est produite lors de la récupération des données. Veuillez vérifier votre connexion Internet et réessayer.",
+    "notificationError": "Erreur de notification",
+    "notificationErrorMessage": "Une erreur s'est produite lors de l'envoi de la notification. Veuillez vérifier votre connexion Internet et réessayer."
+}
+  

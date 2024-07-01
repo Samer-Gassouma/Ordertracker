@@ -1,0 +1,27 @@
+{
+    "delivery": "Delivery",
+    "history": "History",
+    "settings": "Settings",
+    "profile": "Profile",
+    "welcome": "Welcome",
+    "welcomeMessage": "Get started by adding a new shipment.",
+    "addPackage": "New Shipment",
+    "trackingNumber": "Tracking Number",
+    "carrier": "Carrier",
+    "label": "Label (optional)",
+    "continue": "Continue",
+    "back": "back",
+    "add": "Add",
+    "remove": "Remove",
+    "save": "save",
+    "cancel": "cancel",
+    "update": "update available",
+    "updateRequired": "Update Required",
+    "updateAvailable": "An update is available. Please update the app to continue.",
+    "updateRequiredMessage": "This version of the app is no longer supported. Please update the app to continue.",
+    "networkError": "Network Error",
+    "networkErrorMessage": "An error occurred while trying to connect to the server. Please check your internet connection and try again.",
+    "notificationError": "Notification Error",
+    "notificationErrorMessage": "An error occurred while trying to register for notifications. Please check your internet connection and try again."
+  }
+  
