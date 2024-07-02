@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from '../app/i18n';
 import { getLocales, getCalendars } from 'expo-localization';
 import { Portal, Title } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 
 const TrackingModal = ({ visible, onClose, onContinue }: { visible: boolean, onClose: () => void, onContinue: () => void }) => {
   const [modalHeight] = useState(new Animated.Value(0));
@@ -16,7 +17,7 @@ const TrackingModal = ({ visible, onClose, onContinue }: { visible: boolean, onC
   const [showCarriersModal, setShowCarriersModal] = useState(false);
   const [selectedCarrier, setSelectedCarrier] = useState('');
   const [carriers, setCarriers] = useState([]); // List of carriers
-
+  const router = useRouter()
   const [showError, setShowError] = useState(false);
 
   const navigation = useNavigation();
@@ -113,11 +114,11 @@ const TrackingModal = ({ visible, onClose, onContinue }: { visible: boolean, onC
       } catch (error) {
         console.error('Error storing package:', error);
       }
+      router.setParams({ trackingNumber: trackingNumber });
+      router.setParams({ name: name});
+      router.push('TrackingView');
+      router.push({pathname : "/TrackingView" , params : {name :  name,trackingNumber: trackingNumber}})
 
-      navigation.navigate('TrackingView', {
-        trackingNumber: trackingNumber,
-        name: name,
-      });
 
       try {
         const response = await axios.get('https://apidev.vanilla.digital/public/tracking/data', {

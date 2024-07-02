@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import axios from 'axios';
 import StarterView from './starterView';
 import { getLocales, getCalendars } from 'expo-localization';
+import { useRouter } from 'expo-router';
 
 const HomeView = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +23,7 @@ const HomeView = () => {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
-
+  const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTab, setSelectedTab] = useState('All Shipments');
@@ -56,7 +57,7 @@ const HomeView = () => {
           timezone: getCalendars()[0].timeZone,
         },
       });
-      if(response.data.status.code === 'unknown'){
+      if (response.data.status.code === 'unknown') {
         return null;
       }
       return response.data;
@@ -164,7 +165,7 @@ const HomeView = () => {
     });
   };
 
-  if (isLoading || refreshing ) {
+  if (isLoading || refreshing) {
     return <ActivityIndicator size="large" style={styles.container} />;
   }
 
@@ -222,12 +223,10 @@ const HomeView = () => {
               data={filteredOrders()}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => {
-                  navigation.navigate('TrackingView', {
-                    trackingNumber: item.trackingNumber,
-                    name: item.label
-                  });
+                 
+                  router.push({pathname : "/TrackingView" , params : {name :  item.label,trackingNumber: item.trackingNumber}})
                 }}
-                key={item.trackingNumber}
+                  key={item.trackingNumber}
                 >
                   <View style={{
                     ...styles.packageItem,

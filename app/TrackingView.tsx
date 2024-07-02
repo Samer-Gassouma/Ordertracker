@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, ActivityIndicator, Image, FlatList, TouchableOp
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
+import { useRouter } from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18n from './i18n';
@@ -17,16 +18,18 @@ import * as Clipboard from 'expo-clipboard';
 import { getLocales, getCalendars } from 'expo-localization';
 
 
-const TrackingView = () => {
+const TrackingView = (params:any) => {
+
   const navigation = useNavigation();
   const route = useRoute();
+  const router = useRouter()
   const insets = useSafeAreaInsets();
   const [isLoading, setIsLoading] = useState(true);
-  const [trackingData, setTrackingData] = useState(null);
+  const [trackingData, setTrackingData] = useState<any>();
   const [refreshing, setRefreshing] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [deliveryDate, setDeliveryDate] = useState(0);
-  const trackingNumber = (route.params as { trackingNumber?: string; name?: string })?.trackingNumber;
+  const trackingNumber = (route.params as { trackingNumber?: string; name?: string })?.trackingNumber ?? '';
   const name = (route.params as { name?: string }).name ?? '';
   const [errorMessage, seterrorMessage] = useState('');
   const [visible, setVisible] = React.useState(false);
@@ -79,7 +82,7 @@ const TrackingView = () => {
   const TrackingNumberExist = async (trackingNumber: string) => {
     const storedOrders = await AsyncStorage.getItem('orders');
     const orders = storedOrders ? JSON.parse(storedOrders) : [];
-    const orderIndex = orders.findIndex(o => o.trackingNumber === trackingNumber);
+    const orderIndex = orders.findIndex((o: { trackingNumber: string; }) => o.trackingNumber === trackingNumber);
 
 
     if (orderIndex !== -1) {
@@ -106,7 +109,7 @@ const TrackingView = () => {
   }
 
   useEffect(() => {
-    let interval_delivery;
+    let interval_delivery:any;
     const fetchData = async () => {
       if (!trackingNumber) return;
       setIsLoading(true);
@@ -214,7 +217,7 @@ const TrackingView = () => {
 
   const handleCopy = async () => {
     try {
-      await Clipboard.setString(trackingNumber);
+      await Clipboard.setString(trackingNumber ?? '');
       onToggleSnackBar();
     } catch (error) {
       console.error('Error copying tracking number:', error);
@@ -249,7 +252,7 @@ const TrackingView = () => {
 
       const storedOrders = await AsyncStorage.getItem('orders');
       const orders = storedOrders ? JSON.parse(storedOrders) : [];
-      const orderIndex = orders.findIndex(o => o.trackingNumber === trackingNumber);
+      const orderIndex = orders.findIndex((o: { trackingNumber: string | undefined; }) => o.trackingNumber === trackingNumber);
 
 
       if (orderIndex !== -1) {

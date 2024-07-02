@@ -4,11 +4,11 @@
     "slug": "Ordertracker",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo-notext.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/logo-notext.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,9 +17,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo-notext.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ivan552.Ordertracker"
     },
     "web": {
       "bundler": "metro",
@@ -39,6 +40,12 @@
         "buildDependencies": [
           "react-native-fast-image"
         ]
+      },
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "352c6703-ea19-4123-9ecd-617ffa297c17"
       }
     }
   }
