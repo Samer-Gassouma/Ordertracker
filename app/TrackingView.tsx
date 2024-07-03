@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, ActivityIndicator, Image, FlatList, TouchableOpacity, RefreshControl, Modal, TextInput, Animated, ScrollView, SafeAreaView } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { Picker } from "@react-native-picker/picker";
@@ -17,12 +16,14 @@ import moment from 'moment';
 import * as Clipboard from 'expo-clipboard';
 import { getLocales, getCalendars } from 'expo-localization';
 
+import { View, StyleSheet, Text, ActivityIndicator, Image, FlatList, TouchableOpacity, RefreshControl, Modal, TextInput, Animated, ScrollView, SafeAreaView } from 'react-native';
+;
 
-const TrackingView = (params:any) => {
 
+const TrackingView = (params: any) => {
   const navigation = useNavigation();
   const route = useRoute();
-  const router = useRouter()
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const [isLoading, setIsLoading] = useState(true);
   const [trackingData, setTrackingData] = useState<any>();
@@ -40,57 +41,23 @@ const TrackingView = (params:any) => {
   const [carriers, setCarriers] = useState([]);
 
   const onToggleSnackBar = () => setVisible(!visible);
-
   const onDismissSnackBar = () => setVisible(false);
 
+  // ... (Other state variables if needed)
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalHeight] = useState(new Animated.Value(0));
-
-  const openModal = () => {
-    setShowModal(true);
-    Animated.timing(modalHeight, {
-      toValue: 400,
-      duration: 300,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const closeModal = () => {
-    Animated.timing(modalHeight, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start(() => {
-      setShowModal(false);
-    });
-  };
-
-  useEffect(() => {
-    const fetchCarriers = async () => {
-      try {
-        const response = await axios.get('https://apidev.vanilla.digital/public/carrier');
-        setCarriers(response.data);
-      } catch (error) {
-        console.error('Error fetching carriers:', error);
-      }
-    };
-    fetchCarriers();
-  }, []);
-
+  // ... (fetchCarriers function from your code)
 
   const TrackingNumberExist = async (trackingNumber: string) => {
     const storedOrders = await AsyncStorage.getItem('orders');
     const orders = storedOrders ? JSON.parse(storedOrders) : [];
     const orderIndex = orders.findIndex((o: { trackingNumber: string; }) => o.trackingNumber === trackingNumber);
 
-
     if (orderIndex !== -1) {
       return true;
     } else {
       return false;
     }
-  }
+  };
 
   const fetchTrackingData = async (trackingNumber: string) => {
     try {
@@ -104,12 +71,12 @@ const TrackingView = (params:any) => {
       return response;
     } catch (error) {
       console.error("Failed to fetch tracking data:", error);
-      throw error; 
+      throw error;
     }
-  }
+  };
 
   useEffect(() => {
-    let interval_delivery:any;
+    let interval_delivery: any;
     const fetchData = async () => {
       if (!trackingNumber) return;
       setIsLoading(true);
@@ -174,7 +141,7 @@ const TrackingView = (params:any) => {
     return () => {
       clearInterval(interval_delivery);
     };
-  }, [trackingNumber]); 
+  }, [trackingNumber]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -195,8 +162,8 @@ const TrackingView = (params:any) => {
     }
   };
 
-  const renderStep = ({ item }: { item: any }) => (
-    <View style={styles.stepItem}>
+  const renderStep = ({ item, index }: { item: any, index: number }) => (
+    <View style={styles.stepItem} key={item.humanReadableTime}>
       <Text style={styles.stepText}>{item.humanReadableStatus}</Text>
       <Text style={{
         fontSize: 12,
@@ -204,17 +171,17 @@ const TrackingView = (params:any) => {
         marginBottom: 5,
         fontWeight: 'bold'
       }}>{item.humanReadableTime} - {item.carrier.name}</Text>
-      {
-        item.lines.map((line: any, index: number) => (
-          <View key={index}>
-            <Text style={styles.stepDate}>{line.lineOriginal}</Text>
-          </View>
-        ))
-
-      }
+      {item.lines.length > 0 && (
+          <FlatList
+            data={item.lines}
+            renderItem={({ item, index }) => (
+              <Text key={item.lineOriginal+index} style={styles.stepDate}>{item.lineOriginal}</Text>
+            )}
+            keyExtractor={(item, index) => item.lineOriginal + index.toString()}
+          />
+        )}
     </View>
   );
-
   const handleCopy = async () => {
     try {
       await Clipboard.setString(trackingNumber ?? '');
@@ -245,15 +212,17 @@ const TrackingView = (params:any) => {
     try {
       const storedPackages = await AsyncStorage.getItem('packages');
       const packages = storedPackages ? JSON.parse(storedPackages) : [];
-      packages.label = editName;
-      packages.forcedCarrier = selectedCarrier;
-      await AsyncStorage.setItem('packages', JSON.stringify(packages));
+      const packageIndex = packages.findIndex((p: { trackingNumber: string | undefined; }) => p.trackingNumber === trackingNumber);
 
+      if (packageIndex !== -1) {
+        packages[packageIndex].label = editName;
+        packages[packageIndex].forcedCarrier = selectedCarrier;
+        await AsyncStorage.setItem('packages', JSON.stringify(packages));
+      }
 
       const storedOrders = await AsyncStorage.getItem('orders');
       const orders = storedOrders ? JSON.parse(storedOrders) : [];
       const orderIndex = orders.findIndex((o: { trackingNumber: string | undefined; }) => o.trackingNumber === trackingNumber);
-
 
       if (orderIndex !== -1) {
         orders[orderIndex].label = editName;
@@ -358,14 +327,8 @@ const TrackingView = (params:any) => {
             <ProgressBar progress={progressValue} color={MD3Colors.neutral10} />
           </View>
         ) : (
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-            }
-            contentContainerStyle={styles.scrollViewContent}
-          >
-
-            <View >
+          <View style={{ padding: 20 }}>
+            <View>
               <Text style={{
                 marginLeft: 20,
                 fontSize: 14,
@@ -380,7 +343,6 @@ const TrackingView = (params:any) => {
                 marginBottom: 10,
                 fontWeight: 'bold',
               }} >{
-
                   trackingData?.status.label}</Text>
             </View>
             <ProgressBar progress={deliveryDate} color={MD3Colors.neutral10} style={{
@@ -411,8 +373,6 @@ const TrackingView = (params:any) => {
               borderColor: 'gray',
               marginTop: 20,
             }} />
-
-
             {trackingData?.steps?.length > 0 && (
               <View style={styles.trackingSteps}>
                 <Text style={styles.stepsTitle}>Tracking History</Text>
@@ -423,9 +383,7 @@ const TrackingView = (params:any) => {
                 />
               </View>
             )}
-
-
-          </ScrollView>
+          </View>
         )}
         <Snackbar
           visible={visible}

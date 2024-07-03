@@ -10,7 +10,6 @@ import TrackingModal from '../components/TrackingModal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import axios from 'axios';
-import StarterView from './starterView';
 import { getLocales, getCalendars } from 'expo-localization';
 import { useRouter } from 'expo-router';
 
@@ -20,7 +19,6 @@ const HomeView = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalHeight] = useState(new Animated.Value(0));
-  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
 
   const router = useRouter();
@@ -296,9 +294,8 @@ const HomeView = () => {
       </View>
     );
   } else {
-    return (
-      <StarterView />
-    );
+    return <ActivityIndicator size="large" style={styles.container} />;
+
   }
 };
 

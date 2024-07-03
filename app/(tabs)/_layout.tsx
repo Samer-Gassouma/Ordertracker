@@ -4,11 +4,8 @@ import i18n from '../i18n';
 import * as Icons from "react-native-heroicons/outline";
 import * as Haptics from 'expo-haptics';
 
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
     <Tabs

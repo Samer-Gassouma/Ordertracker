@@ -5,7 +5,6 @@ import { useEffect,useState } from 'react';
 import 'react-native-reanimated';
 import * as Notifications from 'expo-notifications';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { ActivityIndicator, Button, PaperProvider, Text } from 'react-native-paper';
 import { checkApiVersion, requestTrackingPermission } from './appUtils';
 import { View } from 'react-native';
@@ -52,7 +51,6 @@ export default function RootLayout() {
 
 
 
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
